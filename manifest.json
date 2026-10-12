@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Multi PiP (Experimental)",
+  "version": "0.1.0",
+  "description": "Spike para validar la apertura de Document PiP desde el ícono de la extensión.",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "action": {
+    "default_title": "Probar apertura de Multi PiP"
+  }
+}
