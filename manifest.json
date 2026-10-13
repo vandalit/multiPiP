@@ -2,11 +2,12 @@
   "manifest_version": 3,
   "name": "Multi PiP (Experimental)",
   "version": "0.1.0",
-  "description": "Spike para validar la apertura de Document PiP desde el ícono de la extensión.",
+  "description": "Spike de monitor PiP con dos slots fijos y fuentes de video de pestañas.",
   "minimum_chrome_version": "116",
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "storage"
   ],
   "background": {
     "service_worker": "background/service-worker.js"

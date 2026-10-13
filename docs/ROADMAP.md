@@ -10,7 +10,22 @@ otras pestañas y abrir el monitor desde un único clic.
 un cambio de UX.
 
 - Probar el gesto del ícono para abrir Document PiP en el primer clic.
-- Probar cómo presentar solo el video de una pestaña ajena dentro de una caja.
+- Presentar un video de la pestaña activa con `captureStream()` y comprobar
+  quitar/cerrar/acoplar el monitor. **Validado manualmente con YouTube.**
+- La prueba con una segunda pestaña **falló**: sustituye a la fuente actual y
+  el encuadre/tamaño no permanece uniforme.
+- Nuevo spike implementado: un único Document PiP propietario, dos slots fijos,
+  captura del slot 1 local y envío WebRTC local del slot 2. Primer intento falló
+  con `NotAllowedError` por esperar storage antes de inyectar; corregido para
+  invocar `executeScript()` en el evento del ícono, pendiente de revalidación.
+- Mantener cajas con ratio 16:9 y `object-fit: contain`; comprobar con fuentes
+  de distinta resolución/ratio que el grid no se deforme.
+- No avanzar a la cola de tres fuentes hasta demostrar que dos coexisten sin
+  reemplazarse.
+- En el spike multi-fuente, medir el costo de captura y transporte de frames;
+  si se usa WebRTC, observar explícitamente el costo de encode/decode.
+- Verificar cómo una selección de calidad en YouTube se refleja en la copia
+  recibida; los controles del sitio pertenecen a la fuente, no al monitor.
 - Comprobar YouTube; ampliar a Twitch después de validar el flujo base.
 - Validar pausa/reanudación, ruta de audio, mute/restauración y mezcla.
 - Añadir tres fuentes y observar ciclo de vida y rendimiento.
@@ -66,16 +81,19 @@ sin pérdida silenciosa de fuentes ni estado de audio.
 
 ## Dependencias y riesgos principales
 
-1. **Presentar exclusivamente el video de otra pestaña.** Bloqueo técnico
-   principal; `tabCapture` captura la pestaña entera y no debe confundirse con
-   la solución de producto.
+1. **Componer videos de varias pestañas.** Bloqueo actual: abrir Document PiP
+   desde cada pestaña reemplaza el contenido previo. Se necesita un propietario
+   único de la ventana y una vía para componer/encaminar cada fuente.
 2. **Gesto para abrir Document PiP.** El requisito de producto exige que el clic
    del ícono baste desde el primer uso.
 3. **Control de reproductores de terceros.** DOM variable, iframes, políticas de
    los sitios y controles propios pueden limitar pausa o selección.
 4. **Audio.** Mezcla, autoplay, mute reversible y cambios concurrentes del sitio
    requieren pruebas específicas.
-5. **Costo con tres fuentes.** La viabilidad visual no garantiza fluidez ni
+5. **Geometría de frames.** Las fuentes pueden tener resoluciones y ratios
+   distintos; cada caja debe conservar proporción sin cambiar el tamaño del
+   monitor.
+6. **Costo con tres fuentes.** La viabilidad visual no garantiza fluidez ni
    consumo aceptable.
 
 ## Estimación

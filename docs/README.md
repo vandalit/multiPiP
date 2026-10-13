@@ -15,9 +15,9 @@ decisiones de producto no deben confundirse con una solución técnica ya probad
 
 ## Estado
 
-**Definición de producto inicial consolidada; viabilidad técnica por validar.**
-El siguiente paso es ejecutar el spike descrito en el POC antes de comprometer
-una arquitectura o una estimación de implementación.
+**Definición de producto inicial consolidada; spike de dos slots implementado,
+pendiente de validación manual.** No comprometer aún arquitectura de producto ni
+estimación de implementación.
 
 ## Registro de contexto
 

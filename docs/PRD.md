@@ -126,12 +126,16 @@ monitor dependen de la arquitectura que valide el spike.
 
 Estas cuestiones no deben resolverse por suposición:
 
-1. ¿Qué mecanismo permite mostrar el video de otra pestaña dentro de una caja
-   propia sin capturar toda la página, conservando reproducción y calidad?
-2. La apertura de Document PiP desde el ícono pasó en una prueba manual en
-   Chrome sobre una pestaña de YouTube con contenido placeholder. ¿Se repite en
-   las versiones/navegadores objetivo y se puede añadir el video real en esa
-   misma interacción?
+1. Una fuente de YouTube sí se presenta en Document PiP mediante
+   `HTMLVideoElement.captureStream()`, pero al añadir desde otra pestaña la
+   segunda reemplaza a la primera. ¿Qué arquitectura de monitor único permite
+   recibir varias fuentes de pestañas sin reemplazarlas ni capturar páginas
+   completas?
+2. Se observaron diferencias de frame/encuadre entre videos y una presentación
+   que no permanece uniforme. ¿Qué layout mantiene un tamaño estable por caja y
+   respeta ratios/resoluciones distintos?
+3. ¿Se mantiene el flujo de un clic para añadir y quitar fuentes con una
+   arquitectura multi-pestaña, además de la prueba validada de una fuente?
 3. ¿Qué sucede con video y audio en YouTube y Twitch al cambiar de pestaña,
    minimizar, pausar, silenciar o quitar una fuente?
 4. ¿Se puede restaurar de forma fiable el estado de audio que tenía el sitio

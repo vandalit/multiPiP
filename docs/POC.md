@@ -56,44 +56,104 @@ repite tras cerrar y volver a abrir.
 **Pasa:** el primer clic abre el monitor y añade la fuente sin clic extra ni
 confirmación adicional.
 
-**Resultado inicial observado (12 oct 2026):**
+**Primer prototipo observado (12 oct 2026, placeholder anterior):**
 
 | Entorno | Observación | Estado |
 |---|---|---|
 | Chrome, pestaña de YouTube | Un clic abre la ventana pequeña Document PiP con el mensaje placeholder; el badge queda verde `OK` y no se observan errores en consola. | Apertura de un clic validada en este caso. |
-| Segundo clic en el ícono | La ventana permanece abierta. | Resultado del prototipo anterior, que no tenía una fuente que quitar. El nuevo spike implementa toggle de una fuente. |
+| Segundo clic en el ícono | La ventana permanece abierta. | Resultado de ese prototipo anterior; no tenía una fuente que quitar. |
 | Controles de la ventana | Se ven los controles nativos de Chrome (configuración, volver/acoplar a la pestaña y cerrar). | Comportamiento del navegador; no es un error del prototipo. |
 
-Este resultado valida que el clic de la extensión puede abrir Document PiP en
-la prueba realizada. **No** demuestra que el video se presente correctamente.
-El spike actualizado intenta usar `HTMLVideoElement.captureStream()` para
-presentar una vista en vivo sin mover el elemento original; falta verificarlo
-visualmente en Chrome. Registrar la versión exacta de Chrome al repetir o
-ampliar la prueba.
+**Actualización manual posterior (12 oct 2026):** el usuario confirma que el
+video de YouTube se ve en vivo en el monitor y que funcionan el botón **Quitar**,
+el control nativo de volver/acoplar y el de cerrar. La pestaña fuente permanece
+en su lugar. La prueba valida el flujo de una fuente en YouTube; la versión
+exacta de Chrome no quedó registrada. El toggle del segundo clic está
+implementado en el spike actual, pero todavía no se registró una prueba manual
+específica de ese gesto.
 
 ### E2 — Captura/presentación exclusiva del video
 
 **Procedimiento actual:** en YouTube, pulsar el ícono para capturar el video
 principal elegible en una ventana Document PiP; comprobar que se vea una imagen
 en movimiento y que la pestaña original permanezca en su sitio. Quitar con el
-botón de la caja o volver a pulsar el ícono.
+botón de la caja o volver a pulsar el ícono. Probar además los controles nativos
+de volver/acoplar y cerrar.
 
 **Pasa para el spike de una fuente:** la ventana presenta el video en vivo (no
 la página completa), la fuente original sigue abierta y reproducida, y quitar
-la única fuente detiene su pista y cierra la ventana.
+la única fuente detiene su pista y cierra la ventana. **Resultado:** validado
+manualmente en YouTube; el usuario confirma que la vista y los controles
+mencionados funcionan.
 
 **Registrar además:** sincronización, latencia perceptible, resolución,
 relación de aspecto, pantalla completa, cambio de pestaña y restricciones del
 sitio. El spike silencia el elemento de vista previa; el audio continúa en la
 pestaña de origen. No valida aún la mezcla ni el control de audio.
 
-### E3 — Tres fuentes en un monitor
+**Observación del usuario:** los controles de calidad disponibles en el
+reproductor afectan a la fuente original; no aparecen como controles propios
+del monitor. Esto es coherente con el enfoque actual: se muestra una captura
+visual de la salida del `<video>`, no un reproductor independiente. Registrar
+si al cambiar la calidad de la fuente cambia también la imagen recibida y cuánto
+tarda en reflejarse.
 
-**Procedimiento:** añadir sucesivamente tres videos de pestañas distintas.
+### E3 — Varias fuentes en un monitor
 
-**Pasa:** las tres fuentes permanecen visibles en la misma ventana y ninguna
-reemplaza a otra. Una cuarta fuente se rechaza de forma comprensible sin perder
-las existentes.
+**Procedimiento:** iniciar una fuente de YouTube en una pestaña; con ese
+monitor abierto, ir a otra pestaña de YouTube y pulsar el ícono para añadir su
+video.
+
+**Resultado observado (12 oct 2026): FALLA.** Al añadir el video de la segunda
+pestaña, este reemplaza al anterior en vez de coexistir con él. También se
+observan diferencias de encuadre/tamaño de frame entre videos: la ventana o su
+contenido no conserva una presentación uniforme al cambiar la fuente. No se
+registraron resoluciones, dimensiones ni relaciones de aspecto concretas.
+
+**Conclusión:** la implementación actual abre una ventana Document PiP desde
+cada pestaña fuente. No es una cola compartida: al invocar el PiP desde otra
+pestaña, la nueva fuente sustituye a la anterior. No avanzar todavía a tres
+fuentes ni a controles/audio multi-fuente con esta arquitectura.
+
+**Segundo spike implementado, pendiente de prueba manual:** ahora el primer
+video abre un solo Document PiP propietario con dos slots fijos. El segundo
+video se captura en su pestaña y se envía al propietario mediante
+`RTCPeerConnection`/WebRTC local; no se vuelve a pedir otra ventana PiP. Cada
+slot usa una caja 16:9 con `object-fit: contain`. La extensión no configura un
+servidor STUN/TURN. No afirmar aún que el stream conecte, que el frame sea
+uniforme ni que el costo sea aceptable hasta observarlo en Chrome.
+
+**Primer intento bloqueado (12 oct 2026):** Chrome devolvió
+`NotAllowedError: Document PiP requires user activation` desde
+`requestWindow()`. La ruta del clic esperaba operaciones asíncronas de
+`chrome.storage.session` antes de inyectar el script, por lo que se perdió la
+activación transitoria del gesto. Se ajustó el service worker para invocar
+`chrome.scripting.executeScript()` inmediatamente dentro del evento del ícono y
+actualizar el estado en memoria sin esperar la persistencia. Este ajuste está
+pendiente de volver a probarse manualmente; las pruebas de sintaxis no confirman
+que Chrome acepte el gesto.
+
+**Procedimiento:** recargar la extensión; pulsar el ícono en un video de
+YouTube para llenar slot 1; cambiar a otra pestaña de YouTube y pulsarlo para
+llenar slot 2. Verificar que ambas imágenes se muevan simultáneamente, el
+monitor no se reemplace, las cajas mantengan dimensiones y ratio, y quitar cada
+slot sea independiente. La última fuente quitada debe cerrar el monitor.
+
+**Pasa el experimento de dos fuentes:** ambos videos se presentan a la vez en
+la misma ventana, ninguno reemplaza al otro y sus diferencias de resolución o
+ratio no cambian el tamaño de las cajas. Registrar errores de conexión,
+latencia, fluidez, CPU/GPU y comportamiento al cerrar las pestañas.
+
+Solo si este paso pasa, ampliar a tres fuentes. El enfoque de WebRTC puede
+añadir codificación/decodificación; medir antes de escalar.
+
+**Riesgo de recursos a medir:** `captureStream()` evita volver a solicitar el
+video a YouTube, pero no es costo cero: cada vista añade consumo de captura,
+transporte/presentación de frames y composición. Si el puente entre pestañas
+requiere WebRTC, puede añadir codificación y decodificación por fuente. No
+asumir que tres fuentes equivalen exactamente a tres pipelines ni que se
+duplican exactamente; medir CPU/GPU, fluidez y latencia con dos antes de escalar
+a tres. La prueba actual de una fuente no cuantifica ese costo.
 
 ### E4 — Controles de reproducción
 
