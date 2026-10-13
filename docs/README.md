@@ -15,9 +15,10 @@ decisiones de producto no deben confundirse con una solución técnica ya probad
 
 ## Estado
 
-**Definición de producto inicial consolidada; spike de dos slots implementado,
-pendiente de validación manual.** No comprometer aún arquitectura de producto ni
-estimación de implementación.
+**Definición de producto inicial consolidada; spike de dos canales validado
+manualmente.** Faltan pruebas de retirada independiente, geometría y
+rendimiento antes de ampliar a tres slots. No comprometer aún arquitectura de
+producto ni estimación de implementación.
 
 ## Registro de contexto
 

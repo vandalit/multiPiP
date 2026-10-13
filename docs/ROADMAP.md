@@ -17,11 +17,17 @@ un cambio de UX.
 - Nuevo spike implementado: un único Document PiP propietario, dos slots fijos,
   captura del slot 1 local y envío WebRTC local del slot 2. Primer intento falló
   con `NotAllowedError` por esperar storage antes de inyectar; corregido para
-  invocar `executeScript()` en el evento del ícono, pendiente de revalidación.
+  invocar `executeScript()` en el evento del ícono. **Validado manualmente:
+  funcionan dos canales.**
 - Mantener cajas con ratio 16:9 y `object-fit: contain`; comprobar con fuentes
   de distinta resolución/ratio que el grid no se deforme.
-- No avanzar a la cola de tres fuentes hasta demostrar que dos coexisten sin
-  reemplazarse.
+- Antes del tercer slot, verificar retirada independiente, vaciado/cierre del
+  monitor, estabilidad visual con distintas calidades/ratios y observar
+  latencia/CPU/GPU.
+- Después, ampliar el grid fijo a tres slots; posponer estructura de cola,
+  reordenamiento y layouts hasta comprobar el límite de tres.
+- Validar el tercer slot y repetir la prueba de retirada/cierre con las tres
+  fuentes antes de iniciar la capa de cola de producto.
 - En el spike multi-fuente, medir el costo de captura y transporte de frames;
   si se usa WebRTC, observar explícitamente el costo de encode/decode.
 - Verificar cómo una selección de calidad en YouTube se refleja en la copia

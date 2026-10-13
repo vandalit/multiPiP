@@ -115,13 +115,12 @@ cada pestaña fuente. No es una cola compartida: al invocar el PiP desde otra
 pestaña, la nueva fuente sustituye a la anterior. No avanzar todavía a tres
 fuentes ni a controles/audio multi-fuente con esta arquitectura.
 
-**Segundo spike implementado, pendiente de prueba manual:** ahora el primer
+**Segundo spike:** ahora el primer
 video abre un solo Document PiP propietario con dos slots fijos. El segundo
 video se captura en su pestaña y se envía al propietario mediante
 `RTCPeerConnection`/WebRTC local; no se vuelve a pedir otra ventana PiP. Cada
 slot usa una caja 16:9 con `object-fit: contain`. La extensión no configura un
-servidor STUN/TURN. No afirmar aún que el stream conecte, que el frame sea
-uniforme ni que el costo sea aceptable hasta observarlo en Chrome.
+servidor STUN/TURN.
 
 **Primer intento bloqueado (12 oct 2026):** Chrome devolvió
 `NotAllowedError: Document PiP requires user activation` desde
@@ -130,22 +129,26 @@ uniforme ni que el costo sea aceptable hasta observarlo en Chrome.
 activación transitoria del gesto. Se ajustó el service worker para invocar
 `chrome.scripting.executeScript()` inmediatamente dentro del evento del ícono y
 actualizar el estado en memoria sin esperar la persistencia. Este ajuste está
-pendiente de volver a probarse manualmente; las pruebas de sintaxis no confirman
-que Chrome acepte el gesto.
+validado manualmente: el usuario confirma que ya funcionan dos canales.
 
-**Procedimiento:** recargar la extensión; pulsar el ícono en un video de
-YouTube para llenar slot 1; cambiar a otra pestaña de YouTube y pulsarlo para
-llenar slot 2. Verificar que ambas imágenes se muevan simultáneamente, el
-monitor no se reemplace, las cajas mantengan dimensiones y ratio, y quitar cada
-slot sea independiente. La última fuente quitada debe cerrar el monitor.
+**Procedimiento ya validado para coexistencia:** recargar la extensión; pulsar
+el ícono en un video de YouTube para llenar slot 1; cambiar a otra pestaña de
+YouTube y pulsarlo para llenar slot 2. El usuario confirma que funcionan dos
+canales en el monitor.
 
-**Pasa el experimento de dos fuentes:** ambos videos se presentan a la vez en
-la misma ventana, ninguno reemplaza al otro y sus diferencias de resolución o
-ratio no cambian el tamaño de las cajas. Registrar errores de conexión,
-latencia, fluidez, CPU/GPU y comportamiento al cerrar las pestañas.
+**Resultado manual:** el usuario confirma que el monitor ya presenta dos
+canales. Queda validada la coexistencia básica de dos fuentes en la misma
+ventana; aún no se han registrado métricas ni resultados de retirada
+independiente o ratios/resoluciones diferentes.
 
-Solo si este paso pasa, ampliar a tres fuentes. El enfoque de WebRTC puede
-añadir codificación/decodificación; medir antes de escalar.
+**Para cerrar este experimento:** comprobar que quitar el slot 1 deja el slot 2
+activo y viceversa; quitar el último cierra el monitor; probar fuentes con
+calidades/ratios distintos y registrar errores, latencia, fluidez, CPU/GPU y
+comportamiento al cerrar pestañas.
+
+Cuando pasen las verificaciones de retirada, encuadre y medición, ampliar a tres
+fuentes. El enfoque de WebRTC puede añadir codificación/decodificación; medir
+antes de escalar.
 
 **Riesgo de recursos a medir:** `captureStream()` evita volver a solicitar el
 video a YouTube, pero no es costo cero: cada vista añade consumo de captura,

@@ -26,13 +26,12 @@ propietaria con dos slots fijos**:
 El primer intento de abrir este spike falló con `NotAllowedError` porque el
 service worker esperaba operaciones asíncronas antes de inyectar el script y
 Chrome ya no reconocía la activación del ícono. Se cambió esa ruta para inyectar
-sin `await` y persistir el estado en paralelo. El arreglo **está pendiente de
-validación manual**.
+sin `await` y persistir el estado en paralelo. La prueba manual posterior
+confirmó que ahora acepta dos canales.
 
-Recarga la extensión en `chrome://extensions`; pulsa el ícono sobre un video de
-YouTube para llenar slot 1 y luego sobre otra pestaña de YouTube para llenar
-slot 2. Comprueba que ambos se vean simultáneamente, que los slots no cambien de
-geometría y que quitar uno no quite el otro.
+Falta comprobar la retirada independiente de cada slot, el cierre al vaciar el
+monitor y la estabilidad del encuadre al mezclar calidades/ratios. También falta
+medir latencia, fluidez y consumo de recursos.
 
 El segundo stream se transporta mediante WebRTC local (sin servidor STUN/TURN
 configurado). Eso puede añadir encode/decode y carga de CPU/GPU; no se sabe aún
@@ -121,7 +120,8 @@ sesión.
   activa. `spike/video-monitor.js` abre el Document PiP propietario y muestra
   slot 1. `spike/secondary-source.js` intenta pasar una segunda pista capturada
   por `HTMLVideoElement.captureStream()` mediante RTCPeerConnection al slot 2.
-  El experimento de dos slots está pendiente de validación manual.
+  Dos canales están validados manualmente; retirada independiente, geometría
+  bajo ratios/calidades distintas y rendimiento aún requieren pruebas.
 - **Decisiones de producto que no deben alterarse por conveniencia técnica:**
   una ventana compartida, hasta tres fuentes, mostrar solo videos, añadir con
   un clic, fuentes originales intactas, layout fila/columna, pausa sobre el
