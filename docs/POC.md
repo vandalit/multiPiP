@@ -29,7 +29,7 @@ requisito de producto y no cuenta como resultado satisfactorio.
 - Mezcla de audio con volumen individual por fuente.
 - Silenciar audio original mientras se incorpora la fuente y comprobar la
   restauración al quitarla.
-- Pruebas en YouTube y Twitch.
+- Prueba inicial en YouTube; Twitch queda para una validación posterior.
 - Observación de errores, ciclo de vida de pestañas/ventana y costo de tres
   fuentes.
 
@@ -56,17 +56,36 @@ repite tras cerrar y volver a abrir.
 **Pasa:** el primer clic abre el monitor y añade la fuente sin clic extra ni
 confirmación adicional.
 
+**Resultado inicial observado (12 oct 2026):**
+
+| Entorno | Observación | Estado |
+|---|---|---|
+| Chrome, pestaña de YouTube | Un clic abre la ventana pequeña Document PiP con el mensaje placeholder; el badge queda verde `OK` y no se observan errores en consola. | Apertura de un clic validada en este caso. |
+| Segundo clic en el ícono | La ventana permanece abierta. | Resultado del prototipo anterior, que no tenía una fuente que quitar. El nuevo spike implementa toggle de una fuente. |
+| Controles de la ventana | Se ven los controles nativos de Chrome (configuración, volver/acoplar a la pestaña y cerrar). | Comportamiento del navegador; no es un error del prototipo. |
+
+Este resultado valida que el clic de la extensión puede abrir Document PiP en
+la prueba realizada. **No** demuestra que el video se presente correctamente.
+El spike actualizado intenta usar `HTMLVideoElement.captureStream()` para
+presentar una vista en vivo sin mover el elemento original; falta verificarlo
+visualmente en Chrome. Registrar la versión exacta de Chrome al repetir o
+ampliar la prueba.
+
 ### E2 — Captura/presentación exclusiva del video
 
-**Procedimiento:** presentar un video de YouTube y uno de Twitch en sus cajas;
-comparar lo mostrado con la pestaña fuente.
+**Procedimiento actual:** en YouTube, pulsar el ícono para capturar el video
+principal elegible en una ventana Document PiP; comprobar que se vea una imagen
+en movimiento y que la pestaña original permanezca en su sitio. Quitar con el
+botón de la caja o volver a pulsar el ícono.
 
-**Pasa:** cada caja contiene el video y no la página, controles del sitio u
-otros elementos de la pestaña; la fuente sigue abierta.
+**Pasa para el spike de una fuente:** la ventana presenta el video en vivo (no
+la página completa), la fuente original sigue abierta y reproducida, y quitar
+la única fuente detiene su pista y cierra la ventana.
 
 **Registrar además:** sincronización, latencia perceptible, resolución,
 relación de aspecto, pantalla completa, cambio de pestaña y restricciones del
-sitio.
+sitio. El spike silencia el elemento de vista previa; el audio continúa en la
+pestaña de origen. No valida aún la mezcla ni el control de audio.
 
 ### E3 — Tres fuentes en un monitor
 
@@ -110,10 +129,14 @@ recarga/navegación, cierre del monitor y cierre de la página host si aplica.
 abierta y reproduciéndose; las otras cajas continúan. Los casos no recuperables
 se notifican y no dejan cajas fantasma.
 
+**Comportamiento acordado:** al quitar la última fuente, cerrar automáticamente
+la ventana del monitor.
+
 ### E7 — Rendimiento
 
-**Procedimiento:** mantener tres fuentes durante una sesión de diez minutos,
-combinando YouTube y Twitch, con monitor visible y luego fuera del foco.
+**Procedimiento:** mantener tres videos de YouTube durante una sesión de diez
+minutos, con monitor visible y luego fuera del foco. Twitch queda para una ronda
+posterior.
 
 **Registrar:** navegador/versión, sistema, CPU/GPU si es observable, resolución
 de origen, fluidez/frames perdidos observables, sincronización, errores y

@@ -11,7 +11,7 @@ un cambio de UX.
 
 - Probar el gesto del ícono para abrir Document PiP en el primer clic.
 - Probar cómo presentar solo el video de una pestaña ajena dentro de una caja.
-- Comprobar YouTube y Twitch.
+- Comprobar YouTube; ampliar a Twitch después de validar el flujo base.
 - Validar pausa/reanudación, ruta de audio, mute/restauración y mezcla.
 - Añadir tres fuentes y observar ciclo de vida y rendimiento.
 
@@ -49,7 +49,7 @@ la página completa.
 - Definir respuesta ante reproductores incompatibles y selección entre varios
   videos.
 
-**Salida:** comportamiento demostrado en YouTube y Twitch, con limitaciones
+**Salida:** comportamiento demostrado inicialmente en YouTube, con limitaciones
 registradas.
 
 ## Fase 4 — Robustez del MVP

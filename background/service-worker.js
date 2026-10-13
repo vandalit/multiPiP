@@ -7,7 +7,7 @@ chrome.action.onClicked.addListener(async (tab) => {
   try {
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      files: ["spike/gesture-probe.js"],
+      files: ["spike/video-monitor.js"],
     });
   } catch (error) {
     console.error("Multi PiP: no se pudo ejecutar la prueba en esta pestaña.", error);
@@ -16,7 +16,7 @@ chrome.action.onClicked.addListener(async (tab) => {
 });
 
 chrome.runtime.onMessage.addListener((message, sender) => {
-  if (message?.type !== "MULTIPIP_GESTURE_PROBE_RESULT") {
+  if (message?.type !== "MULTIPIP_VIDEO_MONITOR_RESULT") {
     return;
   }
 

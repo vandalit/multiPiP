@@ -88,7 +88,7 @@ monitor dependen de la arquitectura que valide el spike.
 ## 6. Requisitos no funcionales y límites
 
 - **Navegador inicial:** Chromium (Chrome y Edge, sujeto a verificación).
-- **Fuentes de prueba iniciales:** YouTube y Twitch.
+- **Fuente de prueba inicial:** YouTube. Twitch queda para una validación posterior.
 - **Rendimiento:** medir con tres videos simultáneos; no se ha acordado todavía
   un umbral numérico de CPU, resolución o FPS.
 - **Permisos:** usar el modelo de permisos mínimo compatible con el flujo real;
@@ -107,8 +107,9 @@ monitor dependen de la arquitectura que valide el spike.
 | Audio original | Se silencia mientras la fuente forma parte del monitor y se intenta restaurar al quitarla. |
 | Cierre de caja | La X quita la caja; no necesita devolver un nodo de video trasladado. |
 | Toggle del ícono | Un segundo clic en la fuente ya añadida la quita. |
+| Monitor vacío | Al quitar la última fuente, cerrar automáticamente la ventana Document PiP. |
 | Capacidad objetivo del POC | Tres fuentes. |
-| Sitios iniciales de validación | YouTube y Twitch. |
+| Sitio de validación inicial | YouTube; Twitch se deja para una ronda posterior. |
 | Apertura inicial | Un solo clic en el ícono es un requisito. Si no se consigue, se reconsidera el enfoque; no se oculta con un paso adicional. |
 
 ## 8. Fuera de alcance inicial
@@ -127,8 +128,10 @@ Estas cuestiones no deben resolverse por suposición:
 
 1. ¿Qué mecanismo permite mostrar el video de otra pestaña dentro de una caja
    propia sin capturar toda la página, conservando reproducción y calidad?
-2. ¿Se puede abrir Document PiP y añadir el primer video directamente desde el
-   clic del ícono de la extensión en los navegadores objetivo?
+2. La apertura de Document PiP desde el ícono pasó en una prueba manual en
+   Chrome sobre una pestaña de YouTube con contenido placeholder. ¿Se repite en
+   las versiones/navegadores objetivo y se puede añadir el video real en esa
+   misma interacción?
 3. ¿Qué sucede con video y audio en YouTube y Twitch al cambiar de pestaña,
    minimizar, pausar, silenciar o quitar una fuente?
 4. ¿Se puede restaurar de forma fiable el estado de audio que tenía el sitio
